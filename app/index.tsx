@@ -1,0 +1,151 @@
+import glossary_icon from '@/assets/icons/Glossary icon.png';
+import man_icon from '@/assets/icons/Man.png';
+import medic_icon from '@/assets/icons/Medic.png';
+import references_icon from '@/assets/icons/Reference Icon.png';
+import woman_icon from '@/assets/icons/Woman.png';
+import "@/global.css";
+import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
+import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
+import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
+import { router } from 'expo-router';
+import { useState } from 'react';
+import { Image, Text, TouchableOpacity, View } from "react-native";
+
+export default function Tutorial() {
+    const [fontsLoaded] = useFonts({
+        Roboto_400Regular,
+        Roboto_700Bold,
+        RobotoSerif_400Regular, 
+        RobotoSerif_700Bold,
+        Inter_400Regular, 
+        Inter_700Bold
+    });
+
+    const [index, setIndex] = useState<number>(0);
+
+    if (!fontsLoaded) {
+        return null; // Ou <AppLoading />
+    }
+
+    const buttonPress = () => {
+        if (index == 2) {
+            router.replace('/home');
+        } else {
+            setIndex(index + 1);
+        }
+    }
+
+    return (
+        <>
+        <View className="w-[210%] -left-[55%] h-[50%] bg-[#235DFF] px-[55%] rounded-b-full">
+            <View className="flex justify-center items-end">
+                <TouchableOpacity onPressOut={() => router.replace('/home')}>
+                    <View className="bg-[#F2FBF4] px-4 py-2 rounded-[4px] mt-4 mr-4">
+                        <Text className="text-[#1b5c9e] font-roboto text-[14px]">Pular</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+            <View className='flex justify-center items-center mt-10'>
+                {index == 0 && <Image source={medic_icon} style={{width: 300, height: 300}} resizeMode="contain"/>}
+                {index == 1 && <Image source={woman_icon} style={{width: 300, height: 300}} resizeMode="contain"/>}
+                {index == 2 && <Image source={man_icon} style={{width: 300, height: 300}} resizeMode="contain"/>}
+            </View>
+        </View>
+
+        <View className="px-[25px] mt-[42px] flex justify-between h-[45%]">
+            <View>
+                <Text className="font-robotoSerifBold text-[32px] text-[#235DFF]">
+                    {index == 0 && "Identifique lesões com precisão!"}
+                    {index == 1 && "Acesso fácil a informações"}
+                    {index == 2 && "Como funciona?"}
+                </Text>
+            </View>
+
+            <View className="px-[7px]">
+                {index == 0 && 
+                   <Text className="font-robotoSerif text-[18px] text-[#040912]">Este aplicativo foi criado para ajudar você a diagnosticar 
+                        lesões causadas por parasitoses de forma rápida e eficiente
+                    </Text>
+                }
+                {index == 1 && 
+                    <>
+                    <Text className="font-robotoSerif text-[18px] text-[#040912]">
+                        Encontre detalhes sobre:
+                    </Text>
+                    <View className='pl-4'>
+                        <Text className='font-robotoSerif text-[18px] text-[#040912]'>
+                            ✔ Lesões características
+                        </Text>
+                    </View>
+                    <View className='pl-4'>
+                        <Text className='font-robotoSerif text-[18px] text-[#040912]'>
+                            ✔ Áreas mais afetadas
+                        </Text>
+                    </View>
+                    <View className='pl-4 mb-2'>
+                        <Text className='font-robotoSerif text-[18px] text-[#040912]'>
+                            ✔ Possíveis agentes envolvidos
+                        </Text>
+                    </View>
+                    <Text className="font-robotoSerif text-[18px] text-[#040912]">
+                        Tudo organizado de maneira intuitiva para otimizar sua análise.
+                    </Text>
+                    </>
+                }
+                {index == 2 && 
+                    <>
+                    <View className='pl-4 flex-row items-center'>
+                        <Text className='font-robotoSerif text-[18px] text-[#040912] w-[80%]'>
+                            Utilize esse ícone para abrir o dicionário de termos técnicos usados sobre a eimeria escolhida
+                        </Text>
+                        <View>
+                            <Image source={glossary_icon} style={{width: 56, height: 56}} resizeMode="contain"/>
+                        </View>
+                    </View>
+                    <View className='pl-4 flex-row mt-6 items-center'>
+                        <Text className='font-robotoSerif text-[18px] text-[#040912] w-[80%]'>
+                            Utilize esse ícone para ver as referências
+                        </Text>
+                        <View>
+                            <Image source={references_icon} style={{width: 56, height: 56}} resizeMode="contain"/>
+                        </View>
+                    </View>
+                    </>
+                }
+            </View>
+
+            <View className="mb-4">
+                <TouchableOpacity onPressOut={buttonPress}>
+                    <View style={{shadowColor: '#00000',
+                            shadowOffset: { width: 0, height: 4 },
+                            shadowOpacity: 0.2,
+                            shadowRadius: 6,
+                            elevation: 3,
+                        }} 
+                        className="bg-[#235DFF] rounded-[14px] h-[44px] w-[100%] flex justify-center items-center">
+                        <Text className="text-white text-[20px] font-interBold">
+                            {index == 2? "Começar": "Próximo"}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+
+
+                <View className='h-[15px] justify-center flex-row mt-2'>
+                    {index == 0? 
+                        <View className='bg-[#1B5C9E] rounded-[15px] h-[15px] w-[15px] mr-[12px]'></View> : 
+                        <View className='bg-[#7E7F7E] rounded-[15px] h-[15px] w-[15px] mr-[12px]'></View>
+                    }
+                    {index == 1? 
+                        <View className='bg-[#1B5C9E] rounded-[15px] h-[15px] w-[15px] mr-[12px]'></View> : 
+                        <View className='bg-[#7E7F7E] rounded-[15px] h-[15px] w-[15px] mr-[12px]'></View>
+                    }
+                    {index == 2? 
+                        <View className='bg-[#1B5C9E] rounded-[15px] h-[15px] w-[15px]'></View> : 
+                        <View className='bg-[#7E7F7E] rounded-[15px] h-[15px] w-[15px]'></View>
+                    }
+                </View>
+            </View>
+        </View>
+        </>
+    )
+}
