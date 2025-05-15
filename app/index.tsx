@@ -1,8 +1,6 @@
 import glossary_icon from '@/assets/icons/Glossary icon.png';
-import man_icon from '@/assets/icons/Man.png';
-import medic_icon from '@/assets/icons/Medic.png';
 import references_icon from '@/assets/icons/Reference Icon.png';
-import woman_icon from '@/assets/icons/Woman.png';
+import chicken_icon from '@/assets/images/Galinha.png';
 import "@/global.css";
 import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
@@ -46,9 +44,9 @@ export default function Tutorial() {
                 </TouchableOpacity>
             </View>
             <View className='flex justify-center items-center mt-10'>
-                {index == 0 && <Image source={medic_icon} style={{width: 300, height: 300}} resizeMode="contain"/>}
-                {index == 1 && <Image source={woman_icon} style={{width: 300, height: 300}} resizeMode="contain"/>}
-                {index == 2 && <Image source={man_icon} style={{width: 300, height: 300}} resizeMode="contain"/>}
+                <View className='bg-white rounded-[50%] p-1 flex justify-center items-center'>
+                    <Image source={chicken_icon} style={{width: 300, height: 300, borderRadius: 300}} resizeMode="cover" />
+                </View>
             </View>
         </View>
 
@@ -116,12 +114,7 @@ export default function Tutorial() {
 
             <View className="mb-4">
                 <TouchableOpacity onPressOut={buttonPress}>
-                    <View style={{shadowColor: '#00000',
-                            shadowOffset: { width: 0, height: 4 },
-                            shadowOpacity: 0.2,
-                            shadowRadius: 6,
-                            elevation: 3,
-                        }} 
+                    <View 
                         className="bg-[#235DFF] rounded-[14px] h-[44px] w-[100%] flex justify-center items-center">
                         <Text className="text-white text-[20px] font-interBold">
                             {index == 2? "Começar": "Próximo"}
