@@ -62,7 +62,7 @@ export default function Tutorial() {
             <View className="px-[7px]">
                 {index == 0 && 
                    <Text className="font-robotoSerif text-[18px] text-[#040912]">Este aplicativo foi criado para ajudar você a diagnosticar 
-                        lesões causadas por parasitoses de forma rápida e eficiente
+                        lesões causadas por coccídeos de forma rápida e eficiente
                     </Text>
                 }
                 {index == 1 && 
@@ -94,7 +94,7 @@ export default function Tutorial() {
                     <>
                     <View className='pl-4 flex-row items-center'>
                         <Text className='font-robotoSerif text-[18px] text-[#040912] w-[80%]'>
-                            Utilize esse ícone para abrir o dicionário de termos técnicos usados sobre a eimeria escolhida
+                            Utilize esse ícone para abrir o dicionário de termos técnicos
                         </Text>
                         <View>
                             <Image source={glossary_icon} style={{width: 56, height: 56}} resizeMode="contain"/>

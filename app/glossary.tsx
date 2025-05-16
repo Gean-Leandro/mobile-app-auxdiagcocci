@@ -75,47 +75,44 @@ export default function Glossary() {
 
     return (
         <>
-        <View className="w-[210%] z-10 -left-[55%] bg-[#235DFF] -top-[30%] h-[50%] px-[55%] rounded-b-[50%]"
-            style={{shadowColor: '#00000',
-                shadowOffset: { width: 0, height: 10 },
-                shadowOpacity: 0.5,
-                shadowRadius: 14,
-                elevation: 10,
-            }}>
-            <View className="flex-row mt-[63%] w-[100%] justify-between pt-4 px-6 items-center">
-                <Image source={require('@/assets/icons/ArrowBackWhite.png')} style={{width: 30, height: 30}} resizeMode="contain"/>
-                <View className='w-[60%] bg-white h-[1px] ml-2'></View>
-                <Text className='text-end text-white ml-3 font-robotoBold text-[24px]'>Glossário</Text>
-            </View>
+        <View className="h-[105%]">
+        <View className='z-10'>
+            <View className='bg-[#235DFF] flex justify-center items-center pt-5'>
 
-            <View className='flex justify-center items-center mt-4'>
-                <View className='flex justify-center items-center mt-5'>
-                    <View className='w-[90%] rounded-[14px] bg-white flex-row'
-                        style={{shadowColor: '#00000',
-                            shadowOffset: { width: 0, height: 10 },
-                            shadowOpacity: 0.5,
-                            shadowRadius: 14,
-                            elevation: 5,
-                        }}>
+                <View className="flex-row mb-6 w-[100%] justify-between pt-4 px-6 items-center">
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Image source={require('@/assets/icons/ArrowBackWhite.png')} style={{width: 30, height: 30}} resizeMode="contain"/>
+                    </TouchableOpacity>
+                    <View className='w-[60%] bg-white h-[1px] ml-2'></View>
+                    <Text className='text-end text-white ml-3 font-robotoBold text-[24px]'>Glossário</Text>
+                </View>
 
-                        <View className='flex justify-center items-center pl-4'>
-                            <Image source={require('@/assets/icons/Filter.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
-                        </View>
+                <View className='w-[90%] rounded-[14px] bg-white flex-row'
+                    style={{shadowColor: '#00000',
+                        shadowOffset: { width: 0, height: 10 },
+                        shadowOpacity: 0.5,
+                        shadowRadius: 14,
+                        elevation: 5,
+                    }}>
 
-                        <TextInput className=' w-[80%]' 
-                            value={searchField}
-                            onChangeText={setSearchField}/>
+                    <View className='flex justify-center items-center pl-4'>
+                        <Image source={require('@/assets/icons/Filter.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                    </View>
 
-                        <View className='flex justify-center items-center pr-4'>
-                            <Image source={require('@/assets/icons/search icon.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
-                        </View>
+                    <TextInput className=' w-[80%]' 
+                        value={searchField}
+                        onChangeText={setSearchField}/>
+
+                    <View className='flex justify-center items-center pr-4'>
+                        <Image source={require('@/assets/icons/search icon.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
                     </View>
                 </View>
             </View>
+            <Image source={require('@/assets/images/Rectangle blu.png')} style={{width:"100%", height: 50}} resizeMode="stretch"/>
         </View>
 
         {/* Content */}
-        <View className="bg-[#F2F2F7] -z-1 -top-[35%] px-2 flex justify-between h-[80%]">
+        <View className="bg-[#F2F2F7] -z-1 -top-[5%] px-2 flex justify-between h-[80%]">
             <ScrollView className='pt-[18%]'>
                 
                 {/* Score*/}
@@ -143,28 +140,6 @@ export default function Glossary() {
                 </View>
             </ScrollView>
         </View>
-
-        <View className='bg-[#F2FBF4] w-[100%] absolute z-10 top-[94%] justify-between flex-row'>
-            <TouchableOpacity onPress={() => router.replace('/home')}>
-                <View className='flex justify-center items-center pl-10 py-2'>
-                    <Image source={require('@/assets/icons/homeIconUnSelected.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
-                    <Text className='text-[16px] font-roboto'>Inicio</Text>
-                </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => router.replace('/glossary')}>
-                <View className='flex justify-center items-center pl-4 py-2'>
-                    <Image source={require('@/assets/icons/GlossaryIconLineBlu.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
-                    <Text className='text-[16px] font-roboto'>Glossário</Text>
-                </View>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => router.replace('/references')}>
-                <View className='flex justify-center items-center py-2 pr-5'>
-                    <Image source={require('@/assets/icons/ReferecesIconBar.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
-                    <Text className='text-[16px] font-roboto'>Referência</Text>
-                </View>
-            </TouchableOpacity>
         </View>
         </>
     )

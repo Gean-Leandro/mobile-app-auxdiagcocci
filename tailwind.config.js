@@ -20,6 +20,7 @@ module.exports = {
       fontFamily: {
         roboto: "Roboto_400Regular",
         robotoBold: "Roboto_700Bold",
+        robotoBoldItalic: "Roboto_700Bold_Italic",
         robotoSerif: "RobotoSerif_400Regular",
         robotoSerifBold: "RobotoSerif_700Bold",
         inter: "Inter_400Regular",
