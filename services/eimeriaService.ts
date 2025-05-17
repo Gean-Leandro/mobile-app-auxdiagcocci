@@ -1,5 +1,5 @@
 import { db } from "@/firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 
 export interface Iscore {
@@ -32,6 +32,30 @@ export const EimeriaService = {
             return {status: "OK", result: lista};
         } catch (error) {
             return {status: "Erro ao buscar eimérias" + error, result: []};
+        }
+    },
+
+    async getEimeria(id:string):Promise<eimeriaProps> {
+        try {
+            const docRef = doc(db, 'eimerias', id); // Supondo que o doc tem o UID como ID
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                return {
+                    id: docSnap.data().id, 
+                    name: docSnap.data().name,
+                    category: docSnap.data().name,
+                    imgLocal: docSnap.data().imgLocal,
+                    imgPath: docSnap.data().imgPath,
+                    general_description: docSnap.data().general_description,
+                    place_of_action: docSnap.data().place_of_action,
+                    clinical_signs: docSnap.data().clinical_signs,
+                    score: docSnap.data().score,
+                };
+            } else {
+                throw "Eimeria não encontrada";
+            }
+        } catch (error) {
+            throw error;
         }
     },
 }

@@ -1,5 +1,5 @@
-import glossary_icon from '@/assets/icons/Glossary icon.png';
-import references_icon from '@/assets/icons/Reference Icon.png';
+import glossary_icon from '@/assets/icons/GlossaryIconLineBlu.png';
+import references_icon from '@/assets/icons/ReferecesIconBarOnSelected.png';
 import chicken_icon from '@/assets/images/Galinha.png';
 import "@/global.css";
 import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
@@ -97,15 +97,15 @@ export default function Tutorial() {
                             Utilize esse ícone para abrir o dicionário de termos técnicos
                         </Text>
                         <View>
-                            <Image source={glossary_icon} style={{width: 56, height: 56}} resizeMode="contain"/>
+                            <Image source={glossary_icon} style={{width: 40, height: 40}} resizeMode="contain"/>
                         </View>
                     </View>
-                    <View className='pl-4 flex-row mt-6 items-center'>
+                    <View className='pl-4 flex-row mt-9 items-center'>
                         <Text className='font-robotoSerif text-[18px] text-[#040912] w-[80%]'>
                             Utilize esse ícone para ver as referências
                         </Text>
                         <View>
-                            <Image source={references_icon} style={{width: 56, height: 56}} resizeMode="contain"/>
+                            <Image source={references_icon} style={{width: 40, height: 40}} resizeMode="contain"/>
                         </View>
                     </View>
                     </>

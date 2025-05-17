@@ -4,8 +4,9 @@ import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
 import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
 import { router } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
-import { Image, SectionList, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { query } from "firebase/firestore";
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Image, RefreshControl, SectionList, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
     const [fontsLoaded] = useFonts({
@@ -17,6 +18,7 @@ export default function Home() {
         Inter_700Bold
     });
 
+    const [refreshing, setRefreshing] = useState(false);
     const [searchField, setSearchField] = useState<string>('');
     const [eimerias, setEimerias] = useState<eimeriaProps[]>([]);
 
@@ -32,6 +34,21 @@ export default function Home() {
 
         fetchEimerias();
     }, []);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+    
+        // Simula um carregamento de dados
+        setTimeout(async () =>  {
+            const query = await EimeriaService.getEimerias();
+            if (query.status === "OK") {
+                setEimerias(query.result);
+            } else {
+                console.log('error')
+            }
+          setRefreshing(false);
+        }, 2000);
+      }, [query]);
 
     const filteredSpecies = eimerias.filter(s =>
         s.name.toLowerCase().includes(searchField.toLowerCase())
@@ -86,16 +103,12 @@ export default function Home() {
                 className='-z-1 flex -top-10 px-2'
                 sections={sectionData}
                 keyExtractor={(item) => item.name}
+                refreshControl={
+                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                  }
                 renderSectionHeader={({ section: { title } }) => {
                 let bgClass = 'bg-white';
                 let textColor = 'text-black';
-                // if (title === 'Espécies menos frequentes') {
-                //     bgClass = 'bg-mygray-300';
-                // } else if (title === 'Espécies menos patogências') {
-                //     bgClass = 'bg-mygray-800';
-                //     textColor = 'text-white'
-                // }
-                
                 return (
                     <View className={`${bgClass} w-[100%] flex-row justify-center items-center pt-5`}>
                         <View className='bg-mygray-500 w-[33px] h-[4px]'></View>
@@ -107,15 +120,6 @@ export default function Home() {
                 let bgClass = 'bg-white';
                 let bgSpecie = index % 2 === 0 ? 'bg-white' : 'bg-mygray-300';
                 let textColor = 'black';
-
-                // if (section.title === 'Espécies menos frequentes') {
-                //     bgClass = 'bg-mygray-300';
-                //     bgSpecie = index % 2 === 0 ? 'bg-mygray-300' : 'bg-[#bfbfbf]';
-                // } else if (section.title === 'Espécies menos patogências') {
-                //     bgClass = 'bg-mygray-800';
-                //     textColor = 'white'
-                //     bgSpecie = index % 2 === 0 ? 'bg-mygray-800' : 'bg-mygray-900';
-                // }
                 
                 return(
                     <View className={`${bgClass} w-[100%] py-4`}>
@@ -131,7 +135,8 @@ export default function Home() {
                                 </View>
                             </View>
                             <View className='h-[40%] justify-end'>
-                                <TouchableOpacity onPress={() => router.navigate({pathname:'/specie'})} className='rounded-[8px] w-[154.08] h-[41] items-center justify-center'
+                                <TouchableOpacity onPress={() => {
+                                    router.navigate({pathname:'/specie', params: {id: item.id}})}} className='rounded-[8px] w-[154.08] h-[41] items-center justify-center'
                                 style={{ borderWidth: 1, borderColor: textColor, }}>
                                 <Text className={`text-${textColor} font-roboto text-[15px] font-bold`}>VER MAIS</Text>
                                 </TouchableOpacity>

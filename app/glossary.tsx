@@ -1,9 +1,10 @@
 import "@/global.css";
+import { GlossaryService, Iglossary } from "@/services/glossaryService";
 import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
 import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Glossary() {
@@ -17,57 +18,24 @@ export default function Glossary() {
     });
 
     const [searchField, setSearchField] = useState<string>('');
+    const [glossary, setGlossary] = useState<Iglossary[]>([]);
 
+    useEffect(() => {
+        const fetchEimerias = async () => {
+            const query = await GlossaryService.getGlossary();
+            if (query.status === "OK") {
+                setGlossary(query.result);
+            } else {
+                console.log('error')
+            }
+        }
+
+        fetchEimerias();
+    }, []);
+    
     if (!fontsLoaded) {
         return null; // Ou <AppLoading />
     }
-
-    const glossary = [
-        {
-          word: "Caseosa",
-          meaning: "O termo é comumente usado para se referir a substância caseosa que é uma secreção espessa, esbranquiçada, e pastosa"
-        },
-        {
-          word: "Coalecente",
-          meaning: "Que se refere a algo que se une, funde ou combina em um único todo"
-        },
-        {
-          word: "Divertículo do saco vitelínico",
-          meaning: "É um remanescente do pedúnculo vitelínico (tubo que liga o saco vitelínico ao intestino médio do embrião de aves) que se encontra na maioria das aves, e é mais desenvolvido nas mais jovens"
-        },
-        {
-          word: "Embalonamento",
-          meaning: "É um termo usado para descrever a distensão ou aumento de volume de uma região do corpo, muitas vezes relacionada a gases ou líquidos"
-        },
-        {
-          word: "Exudato",
-          meaning: "Líquidos, células ou outras substâncias celulares eliminados vagarosamente dos VASOS SANGUÍNEOS"
-        },
-        {
-          word: "Morbidade",
-          meaning: "É o termo usado para indicar a frequência ou proporção de indivíduos que apresentam uma determinada enfermidade dentro de um grupo específico. Diferentemente de Mortalidade, que é o numero de mortes causados por uma doença"
-        },
-        {
-          word: "Período pré-patente",
-          meaning: "É o intervalo entre a infecção e o aparecimento dos primeiros sinais de uma doença"
-        },
-        {
-          word: "Petéquias",
-          meaning: "Pequenos pontos vermelhos ou marrons causadas por pequenos sangramentos"
-        },
-        {
-          word: "Serosa",
-          meaning: "Tecido conjuntivo que reveste as cavidades do corpo, secretando um líquido claro que lubrifica as superfícies dos órgãos"
-        },
-        {
-          word: "Tonsilas",
-          meaning: "São estruturas do tecido linfático, localizadas na região da garganta e da cavidade oral, que fazem parte do sistema imunológico. Elas ajudam a combater infecções ao atuar como uma barreira contra microrganismos que entram pelo nariz e pela boca"
-        },
-        {
-          word: "Trabéculas",
-          meaning: "Refere-se a pequenas estruturas em forma de feixes ou redes dentro de tecidos, especialmente em ossos, coração e alguns órgãos"
-        },
-    ]
 
     const filteredGlossary = glossary.filter(s =>
         s.word.toLowerCase().includes(searchField.toLowerCase())

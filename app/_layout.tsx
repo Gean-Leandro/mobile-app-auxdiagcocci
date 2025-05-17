@@ -6,8 +6,8 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
-         <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
-            <StatusBar style='auto'/>
+         <SafeAreaView style={{ flex: 1 }}>
+            <StatusBar style="light" backgroundColor="#235DFF"/>
             <Tabs screenOptions={{
                   tabBarStyle: {
                     backgroundColor:'#F2FBF4',
@@ -18,6 +18,14 @@ export default function RootLayout() {
                   }
               }}>
               
+              <Tabs.Screen name='index'
+                options={{
+                  tabBarStyle: { display: 'none' },
+                  headerShown: false,
+                  href:null
+                }}/>
+
+
               <Tabs.Screen name='home' options={{
                   title:"Inicio", 
                   headerShown: false,
@@ -73,12 +81,7 @@ export default function RootLayout() {
                   headerShown: false,
                   href:null
                 }}/>
-              <Tabs.Screen name='index'
-                options={{
-                  headerShown: false,
-                  href:null
-                }}/>
-
+              
             </Tabs>
             
          </SafeAreaView>
