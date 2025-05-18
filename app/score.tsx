@@ -5,14 +5,14 @@ import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
 import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useRef, useState } from "react";
-import { ActivityIndicator, Animated, Dimensions, Image, Modal, PanResponder, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
-const SCREEN_HEIGHT = Dimensions.get('window').height;
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-reanimated';
+import Zoom from 'react-native-zoom-reanimated';
 
 export default function Score() {
+    const { width, height } = Dimensions.get('window');
     const [fontsLoaded] = useFonts({
         Roboto_400Regular,
         Roboto_700Bold,
@@ -28,10 +28,10 @@ export default function Score() {
     const [scientifNames, setScientifNames] = useState<IScientificNames[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Controle do zoom e pan dentro do modal
-    const [zoom, setZoom] = useState(1);
-    const scale = useRef(new Animated.Value(1)).current;
-    const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+    // // Controle do zoom e pan dentro do modal
+    // const [zoom, setZoom] = useState(1);
+    // const scale = useRef(new Animated.Value(1)).current;
+    // const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
     
     useEffect(() => {
         const fetchData = async () => {
@@ -62,45 +62,45 @@ export default function Score() {
         fetchData();
     }, [id, index]);
 
-    const panResponder = useRef(
-        PanResponder.create({
-        onMoveShouldSetPanResponder: (_, gestureState) => {
-            return zoom > 1 && (Math.abs(gestureState.dx) > 2 || Math.abs(gestureState.dy) > 2);
-        },
-        onPanResponderMove: Animated.event(
-            [
-            null,
-            { dx: pan.x, dy: pan.y }
-            ],
-            { useNativeDriver: false }
-        ),
-        onPanResponderRelease: () => {
-            // Limites podem ser aplicados aqui se quiser
-        },
-        })
-    ).current;
+    // const panResponder = useRef(
+    //     PanResponder.create({
+    //     onMoveShouldSetPanResponder: (_, gestureState) => {
+    //         return zoom > 1 && (Math.abs(gestureState.dx) > 2 || Math.abs(gestureState.dy) > 2);
+    //     },
+    //     onPanResponderMove: Animated.event(
+    //         [
+    //         null,
+    //         { dx: pan.x, dy: pan.y }
+    //         ],
+    //         { useNativeDriver: false }
+    //     ),
+    //     onPanResponderRelease: () => {
+    //         // Limites podem ser aplicados aqui se quiser
+    //     },
+    //     })
+    // ).current;
 
-    const animateScale = (toValue: number) => {
-        Animated.spring(scale, {
-        toValue,
-        useNativeDriver: true,
-        }).start();
-    };
+    // const animateScale = (toValue: number) => {
+    //     Animated.spring(scale, {
+    //     toValue,
+    //     useNativeDriver: true,
+    //     }).start();
+    // };
 
-    const zoomIn = () => {
-        const newZoom = Math.min(zoom + 0.5, 4);
-        setZoom(newZoom);
-        animateScale(newZoom);
-    };
+    // const zoomIn = () => {
+    //     const newZoom = Math.min(zoom + 0.5, 4);
+    //     setZoom(newZoom);
+    //     animateScale(newZoom);
+    // };
 
-    const zoomOut = () => {
-        const newZoom = Math.max(zoom - 0.5, 1);
-        setZoom(newZoom);
-        animateScale(newZoom);
-        if (newZoom === 1) {
-        pan.setValue({ x: 0, y: 0 });
-        }
-    };
+    // const zoomOut = () => {
+    //     const newZoom = Math.max(zoom - 0.5, 1);
+    //     setZoom(newZoom);
+    //     animateScale(newZoom);
+    //     if (newZoom === 1) {
+    //     pan.setValue({ x: 0, y: 0 });
+    //     }
+    // };
 
     const TextoComItalico = ({ texto }: { texto: string }) => {
         const nomesLower = scientifNames.map(n => n.name.toLowerCase());
@@ -237,39 +237,21 @@ export default function Score() {
                 visible={modalVisible}
                 animationType="slide"
                 transparent={false}
+                style={{backgroundColor: "#000000", flex: 1}}
                 onRequestClose={() => setModalVisible(false)}
             >
-                <View style={styles.modalContainer}>
-                <View style={styles.imageWrapper} {...panResponder.panHandlers}>
-                    <Animated.Image
-                    src={eimeria?.score[Number(index)].img} // mesma imagem
-                    style={[
-                        styles.image,
-                        {
-                        transform: [
-                            { scale },
-                            { translateX: pan.x },
-                            { translateY: pan.y },
-                            { rotate: '90deg' }
-                        ]
-                        }
-                    ]}
-                    resizeMode="contain"
-                    />
-                </View>
-
-                <View style={styles.buttons}>
-                    <TouchableOpacity onPress={zoomIn} style={styles.button}>
-                    <Text style={styles.buttonText}>Zoom +</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={zoomOut} style={styles.button}>
-                    <Text style={styles.buttonText}>Zoom -</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setModalVisible(false)} style={[styles.button, { backgroundColor: 'gray' }]}>
-                    <Text style={styles.buttonText}>Fechar</Text>
-                    </TouchableOpacity>
-                </View>
-                </View>
+                <GestureHandlerRootView>
+                    <Zoom style={{ flex: 1, backgroundColor: "#000000" }}>
+                        <Image source={{ uri: eimeria?.score[Number(index)].img }} 
+                                style={{ width:width, height:height, resizeMode: 'contain', transform: [{rotate: '90deg'}] }}/>
+                    </Zoom>
+                    
+                    <View className="absolute top-4 left-[78%]">
+                        <TouchableOpacity onPress={() => setModalVisible(false)} style={[styles.button, { backgroundColor: 'gray' }]}>
+                            <Text style={styles.buttonText}>Fechar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </GestureHandlerRootView>
             </Modal>
         </View>
             <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
