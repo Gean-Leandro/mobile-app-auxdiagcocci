@@ -5,9 +5,10 @@ import "@/global.css";
 import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
 import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
-import { useState } from 'react';
-import { Image, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Image, Text, TouchableOpacity, View } from "react-native";
 
 export default function Tutorial() {
     const [fontsLoaded] = useFonts({
@@ -20,13 +21,32 @@ export default function Tutorial() {
     });
 
     const [index, setIndex] = useState<number>(0);
+    const [loading, setLoading] = useState(true);
 
-    if (!fontsLoaded) {
-        return null; // Ou <AppLoading />
+    useEffect(() => {
+        const checkTutorial = async () => {
+          const seen = await AsyncStorage.getItem('tutorialSeen');
+          if (seen === 'true') {
+            router.replace('/home'); 
+          } else {
+            setLoading(false); 
+          }
+        };
+        checkTutorial();
+      }, []);
+
+    if (!fontsLoaded || loading) {
+        return (
+            <View className='w-[100%] h-[100%] flex justify-center bg-white items-center'>
+                <Image source={require('@/assets/icons/chickenLogo.png')} style={{width:300, height:300}} resizeMode='contain'/>
+                <ActivityIndicator size="large" color="#235DFF" />
+            </View>
+        );
     }
 
-    const buttonPress = () => {
+    const buttonPress = async () => {
         if (index == 2) {
+            await AsyncStorage.setItem('tutorialSeen', 'true');
             router.push('/home');
         } else {
             setIndex(index + 1);
@@ -37,7 +57,10 @@ export default function Tutorial() {
         <>
         <View className="w-[210%] -left-[55%] h-[50%] bg-[#235DFF] px-[55%] rounded-b-full">
             <View className="flex justify-center items-end">
-                <TouchableOpacity onPressOut={() => router.push('/home')}>
+                <TouchableOpacity onPressOut={ async () => {
+                        await AsyncStorage.setItem('tutorialSeen', 'true');
+                        router.push('/home');
+                    }}>
                     <View className="bg-[#F2FBF4] px-4 py-2 rounded-[4px] mt-4 mr-4">
                         <Text className="text-[#1b5c9e] font-roboto text-[14px]">Pular</Text>
                     </View>

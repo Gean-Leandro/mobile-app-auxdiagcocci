@@ -6,7 +6,7 @@ import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/
 import { router } from 'expo-router';
 import { query } from "firebase/firestore";
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Image, RefreshControl, SectionList, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, RefreshControl, SectionList, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Home() {
     const [fontsLoaded] = useFonts({
@@ -21,12 +21,14 @@ export default function Home() {
     const [refreshing, setRefreshing] = useState(false);
     const [searchField, setSearchField] = useState<string>('');
     const [eimerias, setEimerias] = useState<eimeriaProps[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchEimerias = async () => {
             const query = await EimeriaService.getEimerias();
             if (query.status === "OK") {
                 setEimerias(query.result);
+                setLoading(false);
             } else {
                 console.log('error')
             }
@@ -38,7 +40,6 @@ export default function Home() {
     const onRefresh = useCallback(() => {
         setRefreshing(true);
     
-        // Simula um carregamento de dados
         setTimeout(async () =>  {
             const query = await EimeriaService.getEimerias();
             if (query.status === "OK") {
@@ -66,8 +67,13 @@ export default function Home() {
         ).map(([title, data]) => ({ title, data }));
     }, [filteredSpecies]);
 
-    if (!fontsLoaded) {
-        return null; // Ou <AppLoading />
+    if (!fontsLoaded || loading) {
+        return (
+            <View className='w-[100%] h-[100%] flex justify-center bg-white items-center'>
+                <Image source={require('@/assets/icons/chickenLogo.png')} style={{width:300, height:300}} resizeMode='contain'/>
+                <ActivityIndicator size="large" color="#235DFF" />
+            </View>
+        );
     }
     
     return (

@@ -7,7 +7,7 @@ import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/
 import { LinearGradient } from 'expo-linear-gradient';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from "react";
-import { Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 export default function Specie() {
     const [fontsLoaded] = useFonts({
@@ -24,6 +24,7 @@ export default function Specie() {
 
     const [eimeria, setEimeria] = useState<eimeriaProps|null>(null);
     const [scientifNames, setScientifNames] = useState<IScientificNames[]>([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -48,19 +49,16 @@ export default function Specie() {
             } catch (error) {
                 console.log(error);
             }
-
+            setLoading(false); 
         }
 
         fetchData();
     }, [id]);
 
-    if (!fontsLoaded) {
-        return null; // Ou <AppLoading />
-    }
-
+    
     
     let gradienteHeight = 123;
-
+    
     if ((eimeria?.score) && (eimeria.score.length > 0)){
         gradienteHeight = eimeria?.score.length * (123 + 11)
     }
@@ -73,9 +71,9 @@ export default function Specie() {
         let ultimoIndice = 0;
       
         texto.replace(regex, (match, prefixo, nome, offset) => {
-          if (offset > ultimoIndice) {
-            partes.push(texto.slice(ultimoIndice, offset));
-          }
+            if (offset > ultimoIndice) {
+                partes.push(texto.slice(ultimoIndice, offset));
+            }
           partes.push(
             <Text key={offset} style={{ fontStyle: 'italic' }}>
               {texto.slice(offset, offset + match.length)} {/* Mantém o original */}
@@ -84,13 +82,63 @@ export default function Specie() {
           ultimoIndice = offset + match.length;
           return match;
         });
-      
+        
         if (ultimoIndice < texto.length) {
-          partes.push(texto.slice(ultimoIndice));
+            partes.push(texto.slice(ultimoIndice));
         }
-      
+        
         return <Text>{partes}</Text>;
-      };
+    };
+    
+    if (!fontsLoaded || loading) {
+        return (
+            <>
+                <View className="h-[100%] relative">
+                    <View className='z-10'>
+
+                        <View className='bg-[#FBFBFB] flex justify-center items-center pt-8 pb-4'>
+                            <View className='flex-row justify-start items-center w-[100%] pl-6'>
+                                <TouchableOpacity onPress={() => router.replace('/home')}>
+                                    <Image source={require('@/assets/icons/ArrowBack.png')} style={{width: 24, height: 24}} resizeMode="contain"></Image>
+                                </TouchableOpacity>
+                                <Text className='text-center w-[60%] font-robotoBoldItalic text-[24px] ml-12'>
+                                </Text>
+                            </View>
+                        </View>
+
+                        <Image source={require('@/assets/images/Rectangle.png')} style={{width:"100%", height: 50}} resizeMode="stretch"/>
+                    </View>
+
+                    <View className="absolute h-[100%] z-20 w-[100%] bg-gray-400/30 flex justify-center items-center">
+                        <ActivityIndicator size="large" color="#235DFF" />
+                    </View>
+                    
+                    <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
+                        <TouchableOpacity onPress={() => router.push('/home')}>
+                            <View className='flex justify-center items-center pl-10 py-2'>
+                                <Image source={require('@/assets/icons/homeIconUnSelected.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                                <Text className='text-[16px] font-roboto'>Inicio</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => router.push('/glossary')}>
+                            <View className='flex justify-center items-center pl-4 py-2'>
+                                <Image source={require('@/assets/icons/GlossaryIconLine.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                                <Text className='text-[16px] font-roboto'>Glossário</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => router.push('/references')}>
+                            <View className='flex justify-center items-center py-2 pr-5'>
+                                <Image source={require('@/assets/icons/ReferecesIconBar.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                                <Text className='text-[16px] font-roboto'>Referência</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+                </>
+        );
+    }
 
     return (
         <>
