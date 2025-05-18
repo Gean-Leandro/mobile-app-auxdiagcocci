@@ -1,9 +1,10 @@
 import "@/global.css";
+import { IReference, ReferencesService } from "@/services/referencesService";
 import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
 import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
 import { router } from 'expo-router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Image, Linking, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function References() {
@@ -17,6 +18,20 @@ export default function References() {
     });
 
     const [searchField, setSearchField] = useState<string>('');
+    const [references, setReferences] = useState<IReference[]>([]);
+
+    useEffect(() => {
+        const fetchEimerias = async () => {
+            const query = await ReferencesService.getReferences();
+            if (query.status === "OK") {
+                setReferences(query.result);
+            } else {
+                console.log('error')
+            }
+        }
+
+        fetchEimerias();
+    }, []);
 
     if (!fontsLoaded) {
         return null; // Ou <AppLoading />
@@ -28,7 +43,7 @@ export default function References() {
         }
     };
 
-    const references = [
+    const references_old = [
         {
             autores: "COTRIM, Gilberto",
             titulo: "História global: Brasil e geral",
@@ -116,12 +131,12 @@ export default function References() {
     ]
 
     const filteredReferences = references.filter(s =>
-        s.titulo.toLowerCase().includes(searchField.toLowerCase())
+        s.title.toLowerCase().includes(searchField.toLowerCase())
     );
 
     return (
         <>
-        <View className="h-[105%]">
+        <View className="h-[100%]">
         <View className='z-10'>
             <View className='bg-[#235DFF] flex justify-center items-center pt-5'>
 
@@ -162,7 +177,7 @@ export default function References() {
             <ScrollView className='pt-[18%]'>
                 
                 {/* Score*/}
-                <View className='px-4 mb-[30%]'>
+                <View className='px-4 mb-[28%]'>
                     
                     {filteredReferences.map((item, index) => (
                         <View key={index} style={{shadowColor: '#00000',
@@ -175,13 +190,13 @@ export default function References() {
                             <View className={`w-[5%] h-[100%] rounded-l-[14px] bg-[#235DFF]`}></View>
 
                                 {/* Livro */}
-                                {item.type === "livro" && <>
+                                {item.tipoReferencia === "livro" && <>
                                     <View className="w-[80%] pl-5 py-4">
                                         <Text className='text-[18px] font-robotoBold'>
-                                            {item.titulo}
+                                            {item.title}
                                         </Text>
                                         <Text className='text-[16px] mt-2 font-roboto'>
-                                            {item.autores}. {item.titulo}. {item.edicao}. ed. {item.local}: {item.editora}, {item.ano}
+                                            {item.autor}. {item.title}. {item.edicao}. ed. {item.local}: {item.editora}, {item.ano}
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
@@ -190,13 +205,13 @@ export default function References() {
                                 </>}
 
                                 {/* artigo */}
-                                {item.type === "artigo" && <>
+                                {item.tipoReferencia === "artigo" && <>
                                     <View className="w-[80%] pl-5 py-4">
                                         <Text className='text-[18px] font-robotoBold'>
-                                            {item.titulo}
+                                            {item.title}
                                         </Text>
                                         <Text className='text-[16px] mt-2 font-roboto'>
-                                            {item.autores}. {item.titulo}. {item.tituloProvisorio}, {item.local}, v. {item.volume}, n. {item.numero}, p. {item.paginas}, {item.mes}. {item.ano}. 
+                                            {item.autor}. {item.title}. {item.local}, v. {item.volume}, n. {item.numero}, {item.mes}. {item.ano}. 
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
@@ -204,22 +219,18 @@ export default function References() {
                                     </View>
                                 </>}
                                 {/* site */}
-                                {item.type === "site" && <>
+                                {item.tipoReferencia === "site" && <>
                                     <View className="w-[80%] pl-5 py-4">
                                         <Text className='text-[18px] font-robotoBold'>
-                                            {item.titulo}
+                                            {item.title}
                                         </Text>
                                         <Text className='text-[16px] mt-2 font-roboto'>
-                                            {item.autores}. {item.titulo}. {item.nomeSite}, 
-                                            {item.anoSite}. Disponivel em:{" "}
+                                            {item.autor}. {item.title}. {item.tituloSite}, 
+                                            {item.ano}. Disponivel em:{" "}
                                             <Text onPress={() => handlePress(item.url)} 
                                                 className="text-[16px] font-roboto text-blue-600 underline">
                                                 {item.url}
                                             </Text>
-                                            . Acesso em: 
-                                            {item.diaAcesso} 
-                                            {item.mesAcesso} 
-                                            {item.anoAcesso}. 
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
@@ -232,6 +243,30 @@ export default function References() {
                 </View>
             </ScrollView>
         </View>
+
+            <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
+                <TouchableOpacity onPress={() => router.push('/home')}>
+                    <View className='flex justify-center items-center pl-10 py-2'>
+                        <Image source={require('@/assets/icons/homeIconUnSelected.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Inicio</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => router.push('/glossary')}>
+                    <View className='flex justify-center items-center pl-4 py-2'>
+                        <Image source={require('@/assets/icons/GlossaryIconLine.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Glossário</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => router.push('/references')}>
+                    <View className='flex justify-center items-center py-2 pr-5'>
+                        <Image source={require('@/assets/icons/ReferecesIconBarOnSelected.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Referência</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+
         </View>
         </>
     )

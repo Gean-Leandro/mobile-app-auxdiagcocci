@@ -1,5 +1,6 @@
 import "@/global.css";
 import { eimeriaProps, EimeriaService } from "@/services/eimeriaService";
+import { IScientificNames, ScientificNamesService } from "@/services/scientificNamesService";
 import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
 import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
@@ -24,6 +25,7 @@ export default function Score() {
     const { id, index } = useLocalSearchParams();
     const [eimeria, setEimeria] = useState<eimeriaProps|null>(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [scientifNames, setScientifNames] = useState<IScientificNames[]>([]);
 
     // Controle do zoom e pan dentro do modal
     const [zoom, setZoom] = useState(1);
@@ -31,7 +33,7 @@ export default function Score() {
     const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
     
     useEffect(() => {
-        const fetchEimerias = async () => {
+        const fetchData = async () => {
             let query = null
 
             if (typeof(id) === "string"){
@@ -42,9 +44,21 @@ export default function Score() {
                     console.log(error);
                 }
             }
+
+            try {
+                const query = await ScientificNamesService.getScientificNames();
+                if (query.status === "OK") {
+                    setScientifNames(query.result);
+                } else {
+                    console.log('error')
+                }
+            } catch (error) {
+                console.log(error);
+            }
+    
         }
 
-        fetchEimerias();
+        fetchData();
     }, [id, index]);
 
     const panResponder = useRef(
@@ -91,9 +105,36 @@ export default function Score() {
         return null; // Ou <AppLoading />
     }
 
+    const TextoComItalico = ({ texto }: { texto: string }) => {
+        const nomesLower = scientifNames.map(n => n.name.toLowerCase());
+        const textoLower = texto.toLowerCase();
+        const regex = new RegExp(`\\b(eimeria|e\\.)\\s?(${nomesLower.join('|')})\\b`, 'gi');
+        const partes = [];
+        let ultimoIndice = 0;
+      
+        texto.replace(regex, (match, prefixo, nome, offset) => {
+          if (offset > ultimoIndice) {
+            partes.push(texto.slice(ultimoIndice, offset));
+          }
+          partes.push(
+            <Text key={offset} style={{ fontStyle: 'italic' }}>
+              {texto.slice(offset, offset + match.length)} {/* Mantém o original */}
+            </Text>
+          );
+          ultimoIndice = offset + match.length;
+          return match;
+        });
+      
+        if (ultimoIndice < texto.length) {
+          partes.push(texto.slice(ultimoIndice));
+        }
+      
+        return <Text>{partes}</Text>;
+    };
+
     return (
         <>
-        <View className="h-[105%]">
+        <View className="h-[100%]">
         <View className='z-10'>
             <View className='bg-[#FBFBFB] flex justify-center items-center pt-8 pb-4'>
                 <View className='flex-row justify-start items-center w-[100%] pl-6'>
@@ -114,7 +155,7 @@ export default function Score() {
             <ScrollView className='pt-[18%]'>
 
                 {(eimeria?.score) && (eimeria.score[Number(index)].img !== "") ?
-                    <View className='w-[100%] px-4 mb-4'>
+                    <View className='w-[100%] px-4 mb-6'>
                         <Image src={eimeria.score[Number(index)].img} 
                             style={{width: "100%", height: 200, borderRadius: 14}} resizeMode="cover"/>
                         <View className='absolute top-[80%] left-[93%]'>
@@ -126,7 +167,7 @@ export default function Score() {
                     <></>
                 }
                 {/* Descrição Geral */}
-                <View className='px-4 mt-6'>
+                <View className='px-4 mt-4'>
                     <View className='flex-row justify-between items-center mb-4'>
                         <Text className='font-robotoBold text-[18px]'>Detalhes</Text>
                         <View className='bg-[#2CAFD3] h-[1px] w-[65%]'></View>
@@ -136,7 +177,7 @@ export default function Score() {
                             <View key={index} className='flex-row items-center m-1'>
                                 <View className='w-[12px] h-[12px] border-[2px] border-[#DD5413]  rounded-full'></View>
                                 <Text className='ml-2 text-[16px] font-roboto'>
-                                    {item}
+                                    <TextoComItalico texto={item}/>
                                 </Text>
                             </View>))
                         }
@@ -184,6 +225,28 @@ export default function Score() {
                 </View>
             </Modal>
         </View>
+            <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
+                <TouchableOpacity onPress={() => router.push('/home')}>
+                    <View className='flex justify-center items-center pl-10 py-2'>
+                        <Image source={require('@/assets/icons/homeIconUnSelected.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Inicio</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => router.push('/glossary')}>
+                    <View className='flex justify-center items-center pl-4 py-2'>
+                        <Image source={require('@/assets/icons/GlossaryIconLine.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Glossário</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => router.push('/references')}>
+                    <View className='flex justify-center items-center py-2 pr-5'>
+                        <Image source={require('@/assets/icons/ReferecesIconBar.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Referência</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
         </View>
         </>
     )

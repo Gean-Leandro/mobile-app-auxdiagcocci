@@ -72,7 +72,7 @@ export default function Home() {
     
     return (
         <>
-        <View className='bg-white h-[105%]'>
+        <View className='bg-white relative h-[100%]'>
             <View className='z-10'>
                 <View className='bg-[#235DFF] flex justify-center items-center pt-5'>
                     <View className='w-[90%] rounded-[14px] bg-white flex-row'
@@ -145,8 +145,31 @@ export default function Home() {
                         </View>
                     </View>
                 )}}
-                contentContainerStyle={{ paddingTop: "10%", backgroundColor: "white", borderRadius:50}}
+                contentContainerStyle={{ paddingTop: "10%", backgroundColor: "white", borderRadius:50, paddingBottom: "8%"}}
             />
+
+            <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
+                <TouchableOpacity onPress={() => router.push('/home')}>
+                    <View className='flex justify-center items-center pl-10 py-2'>
+                        <Image source={require('@/assets/icons/homeIcon.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Inicio</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => router.push('/glossary')}>
+                    <View className='flex justify-center items-center pl-4 py-2'>
+                        <Image source={require('@/assets/icons/GlossaryIconLine.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Glossário</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => router.push('/references')}>
+                    <View className='flex justify-center items-center py-2 pr-5'>
+                        <Image source={require('@/assets/icons/ReferecesIconBar.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Referência</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
         </View>
         </>
     )

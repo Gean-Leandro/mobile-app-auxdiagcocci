@@ -43,7 +43,7 @@ export default function Glossary() {
 
     return (
         <>
-        <View className="h-[105%]">
+        <View className="h-[100%]">
         <View className='z-10'>
             <View className='bg-[#235DFF] flex justify-center items-center pt-5'>
 
@@ -84,7 +84,7 @@ export default function Glossary() {
             <ScrollView className='pt-[18%]'>
                 
                 {/* Score*/}
-                <View className='px-4 mb-[30%]'>
+                <View className='px-4 mb-[28%]'>
                     
                     {filteredGlossary.map((item, index) => (
                         <View key={index} style={{shadowColor: '#00000',
@@ -108,6 +108,30 @@ export default function Glossary() {
                 </View>
             </ScrollView>
         </View>
+
+            <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
+                <TouchableOpacity onPress={() => router.push('/home')}>
+                    <View className='flex justify-center items-center pl-10 py-2'>
+                        <Image source={require('@/assets/icons/homeIconUnSelected.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Inicio</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => router.push('/glossary')}>
+                    <View className='flex justify-center items-center pl-4 py-2'>
+                        <Image source={require('@/assets/icons/GlossaryIconLineBlu.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Glossário</Text>
+                    </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => router.push('/references')}>
+                    <View className='flex justify-center items-center py-2 pr-5'>
+                        <Image source={require('@/assets/icons/ReferecesIconBar.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                        <Text className='text-[16px] font-roboto'>Referência</Text>
+                    </View>
+                </TouchableOpacity>
+            </View>
+
         </View>
         </>
     )

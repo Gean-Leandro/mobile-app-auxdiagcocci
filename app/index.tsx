@@ -27,7 +27,7 @@ export default function Tutorial() {
 
     const buttonPress = () => {
         if (index == 2) {
-            router.replace('/home');
+            router.push('/home');
         } else {
             setIndex(index + 1);
         }
@@ -37,7 +37,7 @@ export default function Tutorial() {
         <>
         <View className="w-[210%] -left-[55%] h-[50%] bg-[#235DFF] px-[55%] rounded-b-full">
             <View className="flex justify-center items-end">
-                <TouchableOpacity onPressOut={() => router.replace('/home')}>
+                <TouchableOpacity onPressOut={() => router.push('/home')}>
                     <View className="bg-[#F2FBF4] px-4 py-2 rounded-[4px] mt-4 mr-4">
                         <Text className="text-[#1b5c9e] font-roboto text-[14px]">Pular</Text>
                     </View>
