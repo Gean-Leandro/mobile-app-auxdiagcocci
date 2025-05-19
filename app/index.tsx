@@ -66,9 +66,13 @@ export default function Tutorial() {
                     </View>
                 </TouchableOpacity>
             </View>
-            <View className='flex justify-center items-center mt-10'>
+            <View className='flex justify-center items-center mt-5'>
                 <View className='bg-white rounded-[50%] p-1 flex justify-center items-center'>
-                    <Image source={chicken_icon} style={{width: 300, height: 300, borderRadius: 300}} resizeMode="cover" />
+                    <Image source={chicken_icon} style={{width: 340, height: 340, borderRadius: 340}} resizeMode="cover" />
+                    <View className='absolute top-[75%]'>
+                        <Text className='font-roboto text-[20px] tracking-[0.0999em]'>GUIA ILUSTRATIVO DA</Text>
+                        <Text className='font-robotoBold text-[24px]'>COCCIDIOSE AVIÁRIA</Text>
+                    </View>
                 </View>
             </View>
         </View>

@@ -4,7 +4,7 @@ import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
 import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Image, Linking, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function References() {
@@ -23,21 +23,23 @@ export default function References() {
 
     useEffect(() => {
         const fetchEimerias = async () => {
-            const query = await ReferencesService.getReferences();
-            if (query.status === "OK") {
-                setReferences(query.result);
-            } else {
-                console.log('error')
+            try {
+                const query = await ReferencesService.getReferences();
+          
+                if (query?.status === "OK" && Array.isArray(query.result)) {
+                  setReferences(query.result);
+                } else {
+                  console.warn("Falha ao carregar referências: resposta inesperada", query);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar referências:", error);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false);
-        }
+        };
 
         fetchEimerias();
     }, []);
-
-    if (!fontsLoaded) {
-        return null; // Ou <AppLoading />
-    }
 
     const handlePress = (url:string | undefined) => {
         if (url !== undefined) {
@@ -132,10 +134,11 @@ export default function References() {
         },
     ]
 
-    const filteredReferences = references.filter(s =>
-        s.title.toLowerCase().includes(searchField.toLowerCase())
-    );
-
+    const filteredReferences = useMemo(() => {
+        return references
+          .filter(item => item.title.toLowerCase().includes(searchField.toLowerCase()))
+          .sort((a, b) => a.title.localeCompare(b.title));
+      }, [references, searchField]);
 
     if (!fontsLoaded || loading) {
         return(
@@ -250,9 +253,9 @@ export default function References() {
 
         {/* Content */}
         <View className="bg-[#F2F2F7] -z-1 -top-[5%] px-2 flex justify-between h-[80%]">
+            
+            {references.length > 0 ? 
             <ScrollView className='pt-[18%]'>
-                
-                {/* Score*/}
                 <View className='px-4 mb-[28%]'>
                     
                     {filteredReferences.map((item, index) => (
@@ -331,9 +334,13 @@ export default function References() {
                         </View>))
                     }
                 </View>
-            </ScrollView>
+            </ScrollView>:
+            <View className="w-[100%] h-[100%] flex justify-center items-center">
+                <Text className="text-[16px] mb-10 font-roboto'">Nenhuma referência cadastrada</Text>
+            </View>
+            }
         </View>
-
+        
             <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
                 <TouchableOpacity onPress={() => router.push('/home')}>
                     <View className='flex justify-center items-center pl-10 py-2'>

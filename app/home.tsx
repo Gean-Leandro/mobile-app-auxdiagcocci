@@ -25,14 +25,20 @@ export default function Home() {
 
     useEffect(() => {
         const fetchEimerias = async () => {
-            const query = await EimeriaService.getEimerias();
-            if (query.status === "OK") {
-                setEimerias(query.result);
+            try {
+                const query = await EimeriaService.getEimerias();
+          
+                if (query?.status === "OK" && Array.isArray(query.result)) {
+                  setEimerias(query.result);
+                } else {
+                  console.warn("Falha ao carregar eimerias: resposta inesperada", query);
+                }
+              } catch (error) {
+                console.error("Erro ao buscar eimerias:", error);
+              } finally {
                 setLoading(false);
-            } else {
-                console.log('error')
-            }
-        }
+              }
+            };
 
         fetchEimerias();
     }, []);
@@ -124,14 +130,15 @@ export default function Home() {
                 <Image source={require('@/assets/images/Rectangle blu.png')} style={{width:"100%", height: 50}} resizeMode="stretch"/>
             </View>
 
+            { eimerias.length > 0 ?
             <SectionList
-                className='-z-1 flex -top-10 px-2'
-                sections={sectionData}
-                keyExtractor={(item) => item.name}
-                refreshControl={
-                    <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                  }
-                renderSectionHeader={({ section: { title } }) => {
+            className='-z-1 flex -top-10 px-2'
+            sections={sectionData}
+            keyExtractor={(item) => item.name}
+            refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+            renderSectionHeader={({ section: { title } }) => {
                 let bgClass = 'bg-white';
                 let textColor = 'text-black';
                 return (
@@ -142,11 +149,11 @@ export default function Home() {
                     </View>
                 )}}
                 renderItem={({ item, index, section }) => {
-                let bgClass = 'bg-white';
-                let bgSpecie = index % 2 === 0 ? 'bg-white' : 'bg-mygray-300';
-                let textColor = 'black';
-                
-                return(
+                    let bgClass = 'bg-white';
+                    let bgSpecie = index % 2 === 0 ? 'bg-white' : 'bg-mygray-300';
+                    let textColor = 'black';
+                    
+                    return(
                     <View className={`${bgClass} w-[100%] py-4`}>
                         <View className={`${bgSpecie} w-[95%] ml-[2.5%] py-7 flex-row items-center justify-center rounded-[14px]`}>
                             <View className='w-[50%] items-center'>
@@ -160,9 +167,9 @@ export default function Home() {
                                 </View>
                             </View>
                             <View className='h-[40%] justify-end'>
-                                <TouchableOpacity onPress={() => {
-                                    router.navigate({pathname:'/specie', params: {id: item.id}})}} className='rounded-[8px] w-[154.08] h-[41] items-center justify-center'
-                                style={{ borderWidth: 1, borderColor: textColor, }}>
+                                <TouchableOpacity onPress={() => {router.replace({pathname:'/specie', params: {id: item.id}})}}
+                                    className='rounded-[8px] w-[154.08] h-[41] items-center justify-center'
+                                    style={{ borderWidth: 1, borderColor: textColor, }}>
                                 <Text className={`text-${textColor} font-roboto text-[15px] font-bold`}>VER MAIS</Text>
                                 </TouchableOpacity>
                             </View>
@@ -171,7 +178,12 @@ export default function Home() {
                     </View>
                 )}}
                 contentContainerStyle={{ paddingTop: "10%", backgroundColor: "white", borderRadius:50, paddingBottom: "8%"}}
-            />
+                />:
+                <View className="w-[100%] h-[100%] flex justify-center items-center">
+                    <Text className="text-[16px] mb-52 font-roboto'">Nenhuma espécie cadastrada</Text>
+                </View>
+
+            }
 
             <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
                 <TouchableOpacity onPress={() => router.push('/home')}>

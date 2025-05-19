@@ -6,7 +6,7 @@ import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/
 import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Dimensions, Image, Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import Zoom from 'react-native-zoom-reanimated';
@@ -32,44 +32,29 @@ export default function Score() {
     
     useEffect(() => {
         const fetchData = async () => {
-            let query = null
-
-            if (typeof(id) === "string"){
-                try {
-                    query = await EimeriaService.getEimeria(id);
-                    setEimeria(query);
-                } catch (error) {
-                    console.log(error);
-                }
+          try {
+            if (typeof id === "string") {
+              const eimeriaData = await EimeriaService.getEimeria(id);
+              setEimeria(eimeriaData);
             }
-
-            try {
-                const query = await ScientificNamesService.getScientificNames();
-                if (query.status === "OK") {
-                    setScientifNames(query.result);
-                } else {
-                    console.log('error')
-                }
-            } catch (error) {
-                console.log(error);
+      
+            const sciNameResponse = await ScientificNamesService.getScientificNames();
+            if (sciNameResponse.status === "OK") {
+              setScientifNames(sciNameResponse.result);
+            } else {
+              console.log("Erro ao buscar nomes científicos");
             }
-            setLoading(false); 
-        }
-
+          } catch (error) {
+            console.log("Erro ao carregar dados:", error);
+          } finally {
+            setLoading(false); // <- sempre executa, mesmo se der erro
+          }
+        };
+      
         fetchData();
-    }, [id, index]);
-
-    // const zoomIn = () => {
-    //     if (scale <= 4) {
-    //         setScale(prev => prev + 0.5)
-    //     }
-    // }
-    // const zoomOut = () => {
-    //     if (scale >= 1) {
-    //         setScale(prev => prev - 0.5)
-    //     }
-    // }
-
+    }, [id]);
+      
+    
     const TextoComItalico = ({ texto }: { texto: string }) => {
         const nomesLower = scientifNames.map(n => n.name.toLowerCase());
         const textoLower = texto.toLowerCase();
@@ -149,167 +134,111 @@ export default function Score() {
 
     return (
         <>
-        <View className="h-[100%]">
-        <View className='z-10'>
-            <View className='bg-[#FBFBFB] flex justify-center items-center pt-8 pb-4'>
-                <View className='flex-row justify-start items-center w-[100%] pl-6'>
-                    <TouchableOpacity onPress={() => router.navigate({pathname:'/specie', params: {id: id}})}>
-                        <Image source={require('@/assets/icons/ArrowBack.png')} style={{width: 24, height: 24}} resizeMode="contain"></Image>
-                    </TouchableOpacity>
-                    <Text className='text-center w-[60%] font-robotoBold text-[24px] ml-12'>
-                        Score {eimeria?.score[Number(index)].level}
-                    </Text>
-                </View>
-            </View>
-
-            <Image source={require('@/assets/images/Rectangle.png')} style={{width:"100%", height: 50}} resizeMode="stretch"/>
-        </View>
-
-        {/* Content */}
-        <View className="bg-[#F2F2F7] -z-1 -top-[5%] px-2 flex justify-between h-[80%]">
-            <ScrollView className='pt-[18%]'>
-
-                {(eimeria?.score) && (eimeria.score[Number(index)].img !== "") ?
-                    <View className='w-[100%] px-4 mb-6'>
-                        <Image src={eimeria.score[Number(index)].img} 
-                            style={{width: "100%", height: 200, borderRadius: 14}} resizeMode="cover"/>
-                        <View className='absolute top-[80%] left-[93%]'>
-                            <TouchableOpacity onPress={() => setModalVisible(true)}>
-                                <Image source={require("@/assets/icons/Search-Circle.png")} style={{width: 30, height: 30}} resizeMode="contain"/>
+        { eimeria ? 
+            <>
+            <View className="h-[100%]">
+                <View className='z-10'>
+                    <View className='bg-[#FBFBFB] flex justify-center items-center pt-8 pb-4'>
+                        <View className='flex-row justify-start items-center w-[100%] pl-6'>
+                            <TouchableOpacity onPress={() => router.replace({pathname:'/specie', params: {id: id}})}>
+                                <Image source={require('@/assets/icons/ArrowBack.png')} style={{width: 24, height: 24}} resizeMode="contain"></Image>
                             </TouchableOpacity>
+                            <Text className='text-center w-[60%] font-robotoBold text-[24px] ml-12'>
+                                Score {eimeria.score[Number(index)].level}
+                            </Text>
                         </View>
-                    </View>:
-                    <></>
-                }
-                {/* Descrição Geral */}
-                <View className='px-4 mt-4'>
-                    <View className='flex-row justify-between items-center mb-4'>
-                        <Text className='font-robotoBold text-[18px]'>Detalhes</Text>
-                        <View className='bg-[#2CAFD3] h-[1px] w-[65%]'></View>
                     </View>
-                    <View>
-                        {eimeria?.score[Number(index)].description.map((item, index) => (
-                            <View key={index} className='flex-row items-center m-1'>
-                                <View className='w-[12px] h-[12px] border-[2px] border-[#DD5413]  rounded-full'></View>
-                                <Text className='ml-2 text-[16px] font-roboto'>
-                                    <TextoComItalico texto={item}/>
-                                </Text>
-                            </View>))
+
+                    <Image source={require('@/assets/images/Rectangle.png')} style={{width:"100%", height: 50}} resizeMode="stretch"/>
+                </View>
+
+                {/* Content */}
+                <View className="bg-[#F2F2F7] -z-1 -top-[5%] px-2 flex justify-between h-[80%]">
+                    <ScrollView className='pt-[18%]'>
+
+                        {eimeria.score[Number(index)].img !== "" ?
+                            <View className='w-[100%] px-4 mb-6'>
+                                <Image src={eimeria.score[Number(index)].img} 
+                                    style={{width: "100%", height: 200, borderRadius: 14}} resizeMode="cover"/>
+                                <View className='absolute top-[80%] left-[93%]'>
+                                    <TouchableOpacity onPress={() => setModalVisible(true)}>
+                                        <Image source={require("@/assets/icons/Search-Circle.png")} style={{width: 30, height: 30}} resizeMode="contain"/>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>:
+                            <></>
                         }
+                        {/* Descrição Geral */}
+                        <View className='px-4 mt-4'>
+                            <View className='flex-row justify-between items-center mb-4'>
+                                <Text className='font-robotoBold text-[18px]'>Detalhes</Text>
+                                <View className='bg-[#2CAFD3] h-[1px] w-[65%]'></View>
+                            </View>
+                            <View>
+                                {eimeria.score[Number(index)].description.map((item, index) => (
+                                    <View key={index} className='flex-row items-center m-1'>
+                                        <View className='w-[12px] h-[12px] border-[2px] border-[#DD5413]  rounded-full'></View>
+                                        <Text className='ml-2 text-[16px] font-roboto'>
+                                            <TextoComItalico texto={item}/>
+                                        </Text>
+                                    </View>))
+                                }
+                            </View>
+                        </View>
+                    </ScrollView>
+
+                    {/* Modal com imagem zoom + pan */}
+                    <Modal
+                        visible={modalVisible}
+                        animationType="slide"
+                        transparent={false}
+                        style={{backgroundColor: "#000000", flex: 1}}
+                        onRequestClose={() => setModalVisible(false)}
+                    >
+                        <GestureHandlerRootView>
+                            <Zoom style={{ flex: 1, backgroundColor: "#000000" }}>
+                                <Image source={{ uri: eimeria?.score[Number(index)].img }} 
+                                        style={{ width:width, height:height, resizeMode: 'contain', transform: [{rotate: '90deg'}] }}/>
+                            </Zoom>
+                            
+                            <View className="absolute top-8 left-[85%]">
+                                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                                    <Image source={require('@/assets/icons/CloseImage.png')} style={{width: 35, height: 35}} resizeMode="contain"/>
+                                </TouchableOpacity>
+                            </View>
+                        </GestureHandlerRootView>
+                    </Modal>
+                </View>
+                    <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
+                        <TouchableOpacity onPress={() => router.push('/home')}>
+                            <View className='flex justify-center items-center pl-10 py-2'>
+                                <Image source={require('@/assets/icons/homeIconUnSelected.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                                <Text className='text-[16px] font-roboto'>Inicio</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => router.push('/glossary')}>
+                            <View className='flex justify-center items-center pl-4 py-2'>
+                                <Image source={require('@/assets/icons/GlossaryIconLine.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                                <Text className='text-[16px] font-roboto'>Glossário</Text>
+                            </View>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity onPress={() => router.push('/references')}>
+                            <View className='flex justify-center items-center py-2 pr-5'>
+                                <Image source={require('@/assets/icons/ReferecesIconBar.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                                <Text className='text-[16px] font-roboto'>Referência</Text>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                 </View>
-            </ScrollView>
-
-            {/* Modal com imagem zoom + pan */}
-            <Modal
-                visible={modalVisible}
-                animationType="slide"
-                transparent={false}
-                style={{backgroundColor: "#000000", flex: 1}}
-                onRequestClose={() => setModalVisible(false)}
-            >
-                <GestureHandlerRootView>
-                    <Zoom style={{ flex: 1, backgroundColor: "#000000" }}>
-                        <Image source={{ uri: eimeria?.score[Number(index)].img }} 
-                                style={{ width:width, height:height, resizeMode: 'contain', transform: [{rotate: '90deg'}] }}/>
-                    </Zoom>
-                    
-                    <View className="absolute top-8 left-[85%]">
-                        <TouchableOpacity onPress={() => setModalVisible(false)}>
-                            <Image source={require('@/assets/icons/CloseImage.png')} style={{width: 35, height: 35}} resizeMode="contain"/>
-                        </TouchableOpacity>
-                    </View>
-                    {/* <View className="absolute top-[85%] left-[85%]">
-                        <TouchableOpacity onPress={zoomIn}>
-                            <Image source={require('@/assets/icons/ZoomIn.png')} style={{width: 35, height: 35}} resizeMode="contain"/>
-                        </TouchableOpacity>
-                    </View>
-                    <View className="absolute top-[90%] left-[85%]">
-                        <TouchableOpacity onPress={zoomOut}>
-                            <Image source={require('@/assets/icons/ZoomOut.png')} style={{width: 35, height: 35}} resizeMode="contain"/>
-                        </TouchableOpacity>
-                    </View> */}
-                </GestureHandlerRootView>
-            </Modal>
-        </View>
-            <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
-                <TouchableOpacity onPress={() => router.push('/home')}>
-                    <View className='flex justify-center items-center pl-10 py-2'>
-                        <Image source={require('@/assets/icons/homeIconUnSelected.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
-                        <Text className='text-[16px] font-roboto'>Inicio</Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => router.push('/glossary')}>
-                    <View className='flex justify-center items-center pl-4 py-2'>
-                        <Image source={require('@/assets/icons/GlossaryIconLine.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
-                        <Text className='text-[16px] font-roboto'>Glossário</Text>
-                    </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity onPress={() => router.push('/references')}>
-                    <View className='flex justify-center items-center py-2 pr-5'>
-                        <Image source={require('@/assets/icons/ReferecesIconBar.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
-                        <Text className='text-[16px] font-roboto'>Referência</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-        </View>
+            </> :
+            <>
+                <View className="h-[100%] z-20 w-[100%] bg-gray-400/30 flex justify-center items-center">
+                    <ActivityIndicator size="large" color="#235DFF" />
+                </View>
+            </>}
+        
         </>
     )
 }
-
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      padding: 20,
-      backgroundColor: '#fff',
-      justifyContent: 'center',
-      alignItems: 'center',
-    },
-    thumbnail: {
-      width: 300,
-      height: 200,
-      borderRadius: 10,
-    },
-    loupeIcon: {
-      position: 'absolute',
-      bottom: 10,
-      right: 10,
-    },
-    modalContainer: {
-      flex: 1,
-      backgroundColor: '#000', // fundo preto no modal para destacar a imagem
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 10,
-    },
-    imageWrapper: {
-      width: '100%',
-      height: '70%',
-      overflow: 'hidden',
-    },
-    image: {
-      width: '100%',
-      height: '100%',
-    },
-    buttons: {
-      flexDirection: 'row',
-      marginTop: 20,
-      justifyContent: 'space-around',
-      width: '100%',
-    },
-    button: {
-      backgroundColor: '#235DFF',
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      borderRadius: 6,
-      minWidth: 80,
-      alignItems: 'center',
-    },
-    buttonText: {
-      color: '#fff',
-      fontWeight: 'bold',
-    },
-  });

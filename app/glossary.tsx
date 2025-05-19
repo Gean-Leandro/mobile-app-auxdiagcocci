@@ -4,7 +4,7 @@ import { Inter_400Regular, Inter_700Bold } from '@expo-google-fonts/inter';
 import { Roboto_400Regular, Roboto_700Bold, useFonts } from '@expo-google-fonts/roboto';
 import { RobotoSerif_400Regular, RobotoSerif_700Bold } from '@expo-google-fonts/roboto-serif';
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Image, ScrollView, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 export default function Glossary() {
@@ -23,22 +23,30 @@ export default function Glossary() {
 
     useEffect(() => {
         const fetchEimerias = async () => {
-            const query = await GlossaryService.getGlossary();
-            if (query.status === "OK") {
-                setGlossary(query.result);
-            } else {
-                console.log('error')
+            try {
+                const query = await GlossaryService.getGlossary();
+          
+                if (query?.status === "OK" && Array.isArray(query.result)) {
+                  setGlossary(query.result);
+                } else {
+                  console.warn("Falha ao carregar glossário: resposta inesperada", query);
+                }
+            } catch (error) {
+                console.error("Erro ao buscar glossário:", error);
+            } finally {
+                setLoading(false);
             }
-            setLoading(false); 
-        }
+        };
 
         fetchEimerias();
     }, []);
-    
-    
-    const filteredGlossary = glossary.filter(s =>
-        s.word.toLowerCase().includes(searchField.toLowerCase())
-    );
+
+    const filteredGlossary = useMemo(() => {
+        return glossary
+          .filter(item => item.word.toLowerCase().includes(searchField.toLowerCase()))
+          .sort((a, b) => a.word.localeCompare(b.word));
+      }, [glossary, searchField]);
+
     
     if (!fontsLoaded || loading) {
         return(
@@ -149,11 +157,11 @@ export default function Glossary() {
             <Image source={require('@/assets/images/Rectangle blu.png')} style={{width:"100%", height: 50}} resizeMode="stretch"/>
         </View>
 
-        {/* Content */}
+        
         <View className="bg-[#F2F2F7] -z-1 -top-[5%] px-2 flex justify-between h-[80%]">
-            <ScrollView className='pt-[18%]'>
-                
-                {/* Score*/}
+            
+            {glossary.length > 0 ? 
+                <ScrollView className='pt-[18%]'>
                 <View className='px-4 mb-[28%]'>
                     
                     {filteredGlossary.map((item, index) => (
@@ -176,7 +184,13 @@ export default function Glossary() {
                         </View>))
                     }
                 </View>
-            </ScrollView>
+            </ScrollView> :
+            <View className="w-[100%] h-[100%] flex justify-center items-center">
+                <Text className="text-[16px] mb-10 font-roboto'">Nenhuma palavra cadastrada</Text>
+            </View>
+                
+            }
+            
         </View>
 
             <View className='bg-[#F2FBF4] w-[100%] absolute z-10 pb-4 top-[92%] justify-between flex-row'>
