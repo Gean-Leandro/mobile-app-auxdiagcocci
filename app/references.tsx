@@ -291,6 +291,20 @@ export default function References() {
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
+                                        <Image source={require('@/assets/icons/Open book.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                                    </View>
+                                </>}
+                                {/* pdf */}
+                                {item.tipoReferencia === "pdf" && <>
+                                    <View className="w-[80%] pl-5 py-4">
+                                        <Text className='text-[18px] font-robotoBold'>
+                                            {item.title}
+                                        </Text>
+                                        <Text className='text-[16px] mt-2 font-roboto'>
+                                            {item.autor}. {item.title}. {item.local}, v. {item.volume}, n. {item.numero}, {item.mes}. {item.ano}. 
+                                        </Text>
+                                    </View>
+                                    <View className="flex justify-center items-center w-[12%]">
                                         <Image source={require('@/assets/icons/PDF.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
                                     </View>
                                 </>}

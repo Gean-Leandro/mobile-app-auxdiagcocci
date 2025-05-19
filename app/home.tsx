@@ -58,14 +58,33 @@ export default function Home() {
     const sectionData = useMemo(() => {
         if (!filteredSpecies || filteredSpecies.length === 0) return [];
       
-        return Object.entries(
-          filteredSpecies.reduce((acc, item) => {
-            if (!acc[item.category]) acc[item.category] = [];
-            acc[item.category].push(item);
-            return acc;
-          }, {} as Record<string, eimeriaProps[]>)
-        ).map(([title, data]) => ({ title, data }));
-    }, [filteredSpecies]);
+        // Ordem desejada
+        const categoryOrder = [
+          'Principais espécies',
+          'Espécies menos frequentes',
+          'Espécies menos patogênicas'
+        ];
+      
+        // Agrupa por categoria
+        const grouped = filteredSpecies.reduce((acc, item) => {
+          if (!acc[item.category]) acc[item.category] = [];
+          acc[item.category].push(item);
+          return acc;
+        }, {} as Record<string, eimeriaProps[]>);
+      
+        // Cria as seções com os dados ordenados por nome
+        const sections = Object.entries(grouped).map(([title, data]) => ({
+          title,
+          data: data.sort((a, b) => a.name.localeCompare(b.name)),
+        }));
+      
+        // Ordena as seções pela ordem personalizada
+        const sortedSections = sections.sort((a, b) =>
+          categoryOrder.indexOf(a.title) - categoryOrder.indexOf(b.title)
+        );
+      
+        return sortedSections;
+      }, [filteredSpecies]);
 
     if (!fontsLoaded || loading) {
         return (
@@ -131,7 +150,7 @@ export default function Home() {
                     <View className={`${bgClass} w-[100%] py-4`}>
                         <View className={`${bgSpecie} w-[95%] ml-[2.5%] py-7 flex-row items-center justify-center rounded-[14px]`}>
                             <View className='w-[50%] items-center'>
-                                <Image src={item.imgLocal} style={{width: 86, height:208}} resizeMode="contain"/>
+                                <Image source={{uri: item.imgLocal}} style={{width: 86, height:208}} resizeMode="contain"/>
                             </View>
                             <View className='w-[50%] h-[208.98] items-center justify-center'>
                             <View className='h-[60%] w-[100%] justify-end items-center'>

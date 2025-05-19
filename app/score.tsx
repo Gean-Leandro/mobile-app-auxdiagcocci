@@ -27,11 +27,8 @@ export default function Score() {
     const [modalVisible, setModalVisible] = useState(false);
     const [scientifNames, setScientifNames] = useState<IScientificNames[]>([]);
     const [loading, setLoading] = useState(true);
+    // const [scale, setScale] = useState<number>(2);
 
-    // // Controle do zoom e pan dentro do modal
-    // const [zoom, setZoom] = useState(1);
-    // const scale = useRef(new Animated.Value(1)).current;
-    // const pan = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
     
     useEffect(() => {
         const fetchData = async () => {
@@ -62,45 +59,16 @@ export default function Score() {
         fetchData();
     }, [id, index]);
 
-    // const panResponder = useRef(
-    //     PanResponder.create({
-    //     onMoveShouldSetPanResponder: (_, gestureState) => {
-    //         return zoom > 1 && (Math.abs(gestureState.dx) > 2 || Math.abs(gestureState.dy) > 2);
-    //     },
-    //     onPanResponderMove: Animated.event(
-    //         [
-    //         null,
-    //         { dx: pan.x, dy: pan.y }
-    //         ],
-    //         { useNativeDriver: false }
-    //     ),
-    //     onPanResponderRelease: () => {
-    //         // Limites podem ser aplicados aqui se quiser
-    //     },
-    //     })
-    // ).current;
-
-    // const animateScale = (toValue: number) => {
-    //     Animated.spring(scale, {
-    //     toValue,
-    //     useNativeDriver: true,
-    //     }).start();
-    // };
-
     // const zoomIn = () => {
-    //     const newZoom = Math.min(zoom + 0.5, 4);
-    //     setZoom(newZoom);
-    //     animateScale(newZoom);
-    // };
-
-    // const zoomOut = () => {
-    //     const newZoom = Math.max(zoom - 0.5, 1);
-    //     setZoom(newZoom);
-    //     animateScale(newZoom);
-    //     if (newZoom === 1) {
-    //     pan.setValue({ x: 0, y: 0 });
+    //     if (scale <= 4) {
+    //         setScale(prev => prev + 0.5)
     //     }
-    // };
+    // }
+    // const zoomOut = () => {
+    //     if (scale >= 1) {
+    //         setScale(prev => prev - 0.5)
+    //     }
+    // }
 
     const TextoComItalico = ({ texto }: { texto: string }) => {
         const nomesLower = scientifNames.map(n => n.name.toLowerCase());
@@ -115,7 +83,7 @@ export default function Score() {
           }
           partes.push(
             <Text key={offset} style={{ fontStyle: 'italic' }}>
-              {texto.slice(offset, offset + match.length)} {/* Mantém o original */}
+              {texto.slice(offset, offset + match.length)}
             </Text>
           );
           ultimoIndice = offset + match.length;
@@ -246,11 +214,21 @@ export default function Score() {
                                 style={{ width:width, height:height, resizeMode: 'contain', transform: [{rotate: '90deg'}] }}/>
                     </Zoom>
                     
-                    <View className="absolute top-4 left-[78%]">
-                        <TouchableOpacity onPress={() => setModalVisible(false)} style={[styles.button, { backgroundColor: 'gray' }]}>
-                            <Text style={styles.buttonText}>Fechar</Text>
+                    <View className="absolute top-8 left-[85%]">
+                        <TouchableOpacity onPress={() => setModalVisible(false)}>
+                            <Image source={require('@/assets/icons/CloseImage.png')} style={{width: 35, height: 35}} resizeMode="contain"/>
                         </TouchableOpacity>
                     </View>
+                    {/* <View className="absolute top-[85%] left-[85%]">
+                        <TouchableOpacity onPress={zoomIn}>
+                            <Image source={require('@/assets/icons/ZoomIn.png')} style={{width: 35, height: 35}} resizeMode="contain"/>
+                        </TouchableOpacity>
+                    </View>
+                    <View className="absolute top-[90%] left-[85%]">
+                        <TouchableOpacity onPress={zoomOut}>
+                            <Image source={require('@/assets/icons/ZoomOut.png')} style={{width: 35, height: 35}} resizeMode="contain"/>
+                        </TouchableOpacity>
+                    </View> */}
                 </GestureHandlerRootView>
             </Modal>
         </View>

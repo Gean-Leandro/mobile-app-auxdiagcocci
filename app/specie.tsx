@@ -193,7 +193,7 @@ export default function Specie() {
 
                         <View className='flex-row w-[100%]'>
                             <View className='w-[50%]'>
-                                <Image src={eimeria?.imgLocal} style={{width: "100%", height: 176}} resizeMode="contain"/>
+                                <Image source={{ uri: eimeria?.imgLocal }} style={{width: "100%", height: 176}} resizeMode="contain"/>
                             </View>
                             <Text className='text-[16px] w-[50%] font-roboto'>
                                 {eimeria?.place_of_action && 
@@ -266,7 +266,7 @@ export default function Specie() {
                                             {score.img !== "" ?
                                                 <View className="w-[80%] mr-4 justify-center items-center">
                                                     <TouchableOpacity onPress={() => router.navigate({pathname:'/score', params: {id: eimeria.id, index: index}})}>
-                                                        <Image src={score.img} 
+                                                        <Image source={{ uri: score.img}} 
                                                             style={{
                                                                 width:255, 
                                                                 height:123,
@@ -276,7 +276,6 @@ export default function Specie() {
                                                                 overflow: 'hidden'}}/>
                                                     </TouchableOpacity>
                                                 </View>:
-
 
                                                 <View className="w-[80%] h-[123px] rounded-lg mr-4 justify-center items-center border border-black">
                                                     <TouchableOpacity onPress={() => router.navigate({pathname:'/score', params: {id: eimeria.id, index: index}})}>
