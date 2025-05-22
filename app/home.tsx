@@ -163,7 +163,7 @@ export default function Home() {
                             <View className='h-[60%] w-[100%] justify-end items-center'>
                                 <View>
                                 <Text className={`text-${textColor} text-[24px] font-roboto italic`}>Eimeria</Text>
-                                <Text className={`text-${textColor} text-[24px] italic font-bold  font-robotoMedium`}>{item.name}</Text>
+                                <Text className={`text-${textColor} text-[24px] italic font-bold lowercase font-robotoMedium`}>{item.name}</Text>
                                 </View>
                             </View>
                             <View className='h-[40%] justify-end'>

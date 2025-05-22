@@ -6,7 +6,7 @@ export interface IReference {
     title: string,
     tipoReferencia: string,
     ano: string,
-    autor?: string,
+    autor: string,
     volume?: string,
     numero?: string,
     paginas?: string,

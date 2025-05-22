@@ -148,7 +148,7 @@ export default function Specie() {
                                     <Image source={require('@/assets/icons/ArrowBack.png')} style={{width: 24, height: 24}} resizeMode="contain"></Image>
                                 </TouchableOpacity>
                                 <Text className='text-center w-[60%] font-robotoBoldItalic text-[24px] ml-12'>
-                                    Eimeria <Text className="font-robotoBoldItalic text-[24px] lowercase">{eimeria?.name}</Text>
+                                    Eimeria <Text className="font-robotoBoldItalic lowercase">{eimeria.name}</Text>
                                 </Text>
                             </View>
                         </View>
