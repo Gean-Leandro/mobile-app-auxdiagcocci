@@ -275,7 +275,7 @@ export default function References() {
                                             {item.title}
                                         </Text>
                                         <Text className='text-[16px] mt-2 font-roboto'>
-                                            {item.autor}. {item.title}. {item.edicao}. ed. {item.local}: {item.editora}, {item.ano}
+                                            {item.autor}. {item.title}. {item?.edicao && `${item.edicao}. ed. `}{item?.local && `${item.local}: `}{item?.editora && `${item.editora}, `}{item?.mes && `${item.mes}, `}{item?.ano && `${item.ano}.`}
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
@@ -290,7 +290,7 @@ export default function References() {
                                             {item.title}
                                         </Text>
                                         <Text className='text-[16px] mt-2 font-roboto'>
-                                            {item.autor}. {item.title}. {item.local}, v. {item.volume}, n. {item.numero}, {item.mes}. {item.ano}. 
+                                            {item.autor} {item.title}. {item?.titlePeriodic && `${item.titlePeriodic}, `}{item?.local && `${item.local}, `}{item?.volume && `v. ${item.volume}, `}{item?.numero && `n. ${item.numero}, `}{item?.mes && `n. ${item.mes}, `}{item?.ano && `${item.ano}.`}
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
