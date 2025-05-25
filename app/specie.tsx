@@ -135,6 +135,10 @@ export default function Specie() {
         );
     }
 
+    const primeiroScoreComImagem = eimeria?.score?.find(
+        (item) => item.img && item.img !== ""
+    );
+
     return (
         <>
         {eimeria ?
@@ -159,9 +163,13 @@ export default function Specie() {
                     {/* Content */}
                     <View className="bg-[#F2F2F7] -z-1 -top-[5%] px-2 flex justify-between h-[89%]">
                         <ScrollView className='pt-[18%]'>
-                            {(eimeria?.score) && (eimeria.score.length > 0) && (eimeria.score[0].img !== "") ?
+                            {primeiroScoreComImagem ?
                                 <View className='w-[100%] px-4 mb-4'>
-                                    <Image src={eimeria.score[0].img} style={{width: "100%", height: 200, borderRadius: 14}} resizeMode="cover"/>
+                                    <Image 
+                                        source={{ uri: primeiroScoreComImagem.img }} 
+                                        style={{ width: "100%", height: 200, borderRadius: 14 }} 
+                                        resizeMode="cover"
+                                    />
                                 </View>:
                             <></>
                             }
@@ -272,9 +280,9 @@ export default function Specie() {
                                                             </TouchableOpacity>
                                                         </View>:
 
-                                                        <View className="w-[80%] h-[123px] rounded-lg mr-4 justify-center items-center border border-black">
-                                                            <TouchableOpacity onPress={() => router.navigate({pathname:'/score', params: {id: eimeria.id, index: index}})}>
-                                                                <Text className="text-[16px] text-center px-4 font-roboto font-bold">
+                                                        <View className="w-[253px] -ml-[8px] h-[123px] rounded-lg mr-2 justify-center items-center border border-black">
+                                                            <TouchableOpacity className="w-[100%] h-[100%] flex justify-center items-center" onPress={() => router.navigate({pathname:'/score', params: {id: eimeria.id, index: index}})}>
+                                                                <Text className="text-[16px] text-center px-6 font-roboto font-bold">
                                                                     Não há imagem disponível para esta seção
                                                                 </Text>
                                                             </TouchableOpacity>
