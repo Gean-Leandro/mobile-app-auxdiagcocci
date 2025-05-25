@@ -47,93 +47,6 @@ export default function References() {
         }
     };
 
-    const references_old = [
-        {
-            autores: "COTRIM, Gilberto",
-            titulo: "História global: Brasil e geral",
-            edicao: "10. ed",
-            local: "São Paulo",
-            editora: "Saraiva",
-            ano: 2005,
-            type: "livro"
-        },
-        {
-            autores: "COTRIM, Gilberto",
-            titulo: "Desenvolvimento sustentável na Amazônia",
-            tituloProvisorio: "Revista Brasileira de Geografia",
-            edicao: "10. ed",
-            local: "Rio de Janeiro",
-            volume: 12,
-            numero: 2,
-            paginas: "45-60",
-            mes: "abr./jun",
-            ano: 2010,
-            type: "artigo"
-        },
-        {
-            autores: "COTRIM, Gilberto",
-            titulo: "História global: Brasil e geral",
-            edicao: "10. ed",
-            local: "São Paulo",
-            editora: "Saraiva",
-            ano: "2005",
-            type: "livro"
-        },
-        {
-            autores: "COTRIM, Gilberto",
-            titulo: "História global: Brasil e geral",
-            nomeSite: "Planalto",
-            anoSite: 1988,
-            url: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm",
-            diaAcesso: 12,
-            mesAcesso: "maio",
-            anoAcesso: 2025,
-            type: "site"
-        },
-        {
-            autores: "COTRIM, Gilberto",
-            titulo: "História global: Brasil e geral",
-            edicao: "10. ed",
-            local: "São Paulo",
-            editora: "Saraiva",
-            ano: 2005,
-            type: "livro"
-        },
-        {
-            autores: "COTRIM, Gilberto",
-            titulo: "Desenvolvimento sustentável na Amazônia",
-            tituloProvisorio: "Revista Brasileira de Geografia",
-            edicao: "10. ed",
-            local: "Rio de Janeiro",
-            volume: 12,
-            numero: 2,
-            paginas: "45-60",
-            mes: "abr./jun",
-            ano: 2010,
-            type: "artigo"
-        },
-        {
-            autores: "COTRIM, Gilberto",
-            titulo: "História global: Brasil e geral",
-            edicao: "10. ed",
-            local: "São Paulo",
-            editora: "Saraiva",
-            ano: "2005",
-            type: "livro"
-        },
-        {
-            autores: "COTRIM, Gilberto",
-            titulo: "História global: Brasil e geral",
-            nomeSite: "Planalto",
-            anoSite: 1988,
-            url: "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm",
-            diaAcesso: 12,
-            mesAcesso: "maio",
-            anoAcesso: 2025,
-            type: "site"
-        },
-    ]
-
     const filteredReferences = useMemo(() => {
         return references
           .filter(item => item.autor.toLowerCase().includes(searchField.toLowerCase()))
@@ -275,7 +188,9 @@ export default function References() {
                                             {item.title}
                                         </Text>
                                         <Text className='text-[16px] mt-2 font-roboto'>
-                                            {item.autor}. {item.title}. {item?.edicao && `${item.edicao}. ed. `}{item?.local && `${item.local}: `}{item?.editora && `${item.editora}, `}{item?.mes && `${item.mes}, `}{item?.ano && `${item.ano}.`}
+                                            {item.autor} {item.title}. {item?.edicao && `${item.edicao} ed. `}
+                                            {item?.editora && `Editora: ${item.editora}, `}{item?.local && `${item.local}, `}
+                                            {item?.ano && `${item.ano}. `}{item?.paginas && `${item.paginas} p.`}
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
@@ -290,47 +205,72 @@ export default function References() {
                                             {item.title}
                                         </Text>
                                         <Text className='text-[16px] mt-2 font-roboto'>
-                                            {item.autor} {item.title}. {item?.titlePeriodic && `${item.titlePeriodic}, `}{item?.local && `${item.local}, `}{item?.volume && `v. ${item.volume}, `}{item?.numero && `n. ${item.numero}, `}{item?.mes && `n. ${item.mes}, `}{item?.ano && `${item.ano}.`}
+                                            {item.autor} {item.title}. {item?.titlePeriodic && `${item.titlePeriodic}, `}
+                                            {item?.local && `${item.local}, `}{item?.volume && `v. ${item.volume}, `}
+                                            {item?.numero && `n. ${item.numero}, `}{item?.paginas && `p. ${item.paginas}, `}
+                                            {item?.mes && `${item.mes}. `}{item?.ano && `${item.ano}.`}
+                                            {item?.doi && ` DOI ${item.doi}. `}
+                                            {item?.url && <>
+                                                Disponivel em:{" "}
+                                                <Text onPress={() => handlePress(item.url)} 
+                                                    className="text-[16px] font-roboto text-blue-600 underline">
+                                                    {item.url}
+                                                </Text>
+                                            </>} 
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
                                         <Image source={require('@/assets/icons/Open book.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
                                     </View>
                                 </>}
-                                {/* pdf */}
-                                {item.tipoReferencia === "pdf" && <>
+                                {/* documento institucional / corporativo */}
+                                {item.tipoReferencia === "documento institucional / corporativo" && <>
                                     <View className="w-[80%] pl-5 py-4">
                                         <Text className='text-[18px] font-robotoBold'>
                                             {item.title}
                                         </Text>
                                         <Text className='text-[16px] mt-2 font-roboto'>
-                                            {item.autor}. {item.title}. {item.local}, v. {item.volume}, n. {item.numero}, {item.mes}. {item.ano}. 
+                                            {item?.instituicao && `${item.instituicao}. `}{item?.title && `${item.title}. `}
+                                            {item?.local && `${item.local}. `}{item?.paginas && `${item.paginas} p. `}
+                                            {item?.ano && `${item.ano}. `}
+                                            {item?.url && <>
+                                                Disponivel em:{" "}
+                                                <Text onPress={() => handlePress(item.url)} 
+                                                    className="text-[16px] font-roboto text-blue-600 underline">
+                                                    {item.url}
+                                                </Text>
+                                            </>}  
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
-                                        <Image source={require('@/assets/icons/PDF.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                                        <Image source={require('@/assets/icons/Open book.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
                                     </View>
                                 </>}
-                                {/* site */}
-                                {item.tipoReferencia === "site" && <>
+                                {/* capítulo de livro */}
+                                {item.tipoReferencia === "capítulo de livro" && <>
                                     <View className="w-[80%] pl-5 py-4">
                                         <Text className='text-[18px] font-robotoBold'>
                                             {item.title}
                                         </Text>
                                         <Text className='text-[16px] mt-2 font-roboto'>
-                                            {item.autor}. {item.title}. {item.tituloSite}, 
-                                            {item.ano}. Disponivel em:{" "}
-                                            <Text onPress={() => handlePress(item.url)} 
-                                                className="text-[16px] font-roboto text-blue-600 underline">
-                                                {item.url}
-                                            </Text>
+                                            {item.autor && `${item.autor} `}{item?.titleCapitulo && `${item.titleCapitulo}. `}
+                                            {item?.organizador && `In: ${item.organizador} `}{item?.title && `${item.title}. `}
+                                            {item?.edicao && `${item.edicao} ed. `}{item?.local && `${item.local}: `}
+                                            {item?.editora && `${item.editora}, `}
+                                            {item?.paginas && `p. ${item.paginas}, `}
+                                            {item?.ano && `${item.ano}. `}{item?.url && <>
+                                                Disponivel em:{" "}
+                                                <Text onPress={() => handlePress(item.url)} 
+                                                    className="text-[16px] font-roboto text-blue-600 underline">
+                                                    {item.url}
+                                                </Text>
+                                            </>} 
                                         </Text>
                                     </View>
                                     <View className="flex justify-center items-center w-[12%]">
-                                        <Image source={require('@/assets/icons/Internet.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
+                                        <Image source={require('@/assets/icons/Open book.png')} style={{width: 24, height: 24}} resizeMode="contain"/>
                                     </View>
                                 </>}
-                                
                         </View>))
                     }
                 </View>
