@@ -260,7 +260,7 @@ export default function Specie() {
                                         {/* Imagens do score */}
                                         <View className="w-[90%]">
 
-                                            {eimeria.score.map((score, index) => 
+                                            {eimeria.score.slice().sort((a, b) => a.level - b.level).map((score, index) => 
                                                 <View key={index} className="flex-row w-[100%] mb-[15px]">
                                                     <View className="w-[10%] mr-3 justify-center items-center">
                                                         <Text className="text-[20px] font-roboto font-bold">{score.level}</Text>

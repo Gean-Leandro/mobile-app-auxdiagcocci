@@ -3,7 +3,7 @@ import { collection, doc, getDoc, getDocs } from "firebase/firestore";
 
 
 export interface Iscore {
-    level: number | string,
+    level: number,
     img: string,
     imgPath: string,
     description: Array<string>
