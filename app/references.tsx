@@ -49,7 +49,7 @@ export default function References() {
 
     const filteredReferences = useMemo(() => {
         return references
-          .filter(item => item.autor.toLowerCase().includes(searchField.toLowerCase()))
+          .filter(item => item.title.toLowerCase().includes(searchField.toLowerCase()))
           .sort((a, b) => a.autor.localeCompare(b.autor));
       }, [references, searchField]);
 
