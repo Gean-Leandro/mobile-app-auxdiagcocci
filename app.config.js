@@ -5,9 +5,16 @@ const config = require('./development.config.js');
 
 module.exports = {
   expo: {
-    name: "mobile-coccidiose-app",
+    owner: "geancarlossl",
+    name: "Guia Ilustrativo da Coccidiose Aviária",
     slug: "mobile-coccidiose-app",
     version: "1.0.0",
+    icon: "./assets/images/icon.png",
+    splash: {
+      image: "./assets/images/splash.png",
+      resizeMode: "cover",      
+      backgroundColor: "#ffffff"   
+    },
     android: {
       package: "com.geancarlos.mobilecoccidioseapp",
     },

@@ -1,6 +1,7 @@
 {
   "expo": {
-    "name": "mobile-coccidiose-app",
+    "owner": "geancarlossl",
+    "name": "Guia Ilustrativo da Coccidiose Aviária",
     "slug": "mobile-coccidiose-app",
     "version": "1.0.0",
     "orientation": "portrait",
